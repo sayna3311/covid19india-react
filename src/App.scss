@@ -2242,6 +2242,7 @@ abbr {
   font-size: 12px;
   grid-template-rows: auto;
   min-width: 100%;
+  position: relative;
 
   .state-meta {
     grid-column: 1 / -1;
@@ -2309,7 +2310,10 @@ abbr {
       }
     }
   }
-
+  .cell .heading{
+    position: fixed;
+    top: 0;
+  }
   .row {
     cursor: pointer;
     display: contents;

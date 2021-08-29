@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import HeaderCell from './HeaderCell';
 import TableLoader from './loaders/Table';
 import {Delta7Icon, DistrictIcon, PerLakhIcon} from './snippets/Icons';
@@ -244,6 +245,43 @@ function Table({
     setIsInfoVisible(!isInfoVisible);
   });
 
+  useEffect(() => {
+    const table = document.querySelector('.table-container>.table');
+    const headers = document.querySelectorAll('.table-container>.table>.row.heading:first-child>.cell');
+    
+    // Set config values, set the special z indices for the header divs
+    const stickBottomLimit = 150;
+    const firstHeaderZ = 140;
+    const otherHeaderZ = 120;
+    headers.forEach((el, index)=>{
+        el.style.zIndex = index==0 ? firstHeaderZ : otherHeaderZ;
+    });
+
+    // Build the handler that makes headers stick
+    const handleScroll = ()=>{
+        const rect = table.getBoundingClientRect();
+        let offset = 0;
+        if (rect.top < 0) {
+            offset = Math.min(-rect.top, rect.height-stickBottomLimit);
+        }
+        headers.forEach((el)=>{
+            el.style.transform = 'translateY('+offset+'px)';
+        });
+    };
+
+    // Build debounced scroll listener
+    let ticking = false;
+    document.addEventListener('scroll', (e)=>{
+        if (!ticking) {
+            window.requestAnimationFrame(()=>{
+                handleScroll();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+  }, [])
+  
   return (
     <div className="Table">
       <div className="table-top">
